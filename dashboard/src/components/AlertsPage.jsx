@@ -127,7 +127,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
             const isHighRisk = outbreak.risk_level === 'High';
             const badgeBg = isHighRisk ? '#fee2e2' : '#fef3c7';
             const badgeColor = isHighRisk ? '#ef4444' : '#d97706';
-            const isAlertSent = alertedIds.has(outbreak.id) || (outbreak.farmers_alerted || 0) > 0;
+            const isAlertSent = alertedIds.has(outbreak.id);
 
             return (
               <div 
