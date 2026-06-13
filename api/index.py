@@ -288,39 +288,49 @@ def dashboard_icons():
 
 
 # ─── DEMO: Analyze image page ────────────────────────
-DEMO_PAGE = """<!DOCTYPE html>
+LOCATIONS_JSON = json.dumps(NIGERIAN_LOCATIONS)
+STATE_KEYS_JSON = json.dumps(STATE_KEYS)
+
+DEMO_PAGE = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CropGuard NG - Analyze Crop</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0f0a; color: #e0e0e0; min-height: 100vh; }
-  .container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
-  header { text-align: center; margin-bottom: 2rem; }
-  h1 { color: #7cff7c; font-size: 2rem; margin-bottom: 0.5rem; }
-  .subtitle { color: #888; font-size: 0.9rem; }
-  .card { background: #141a14; border: 1px solid #2a3a2a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-  .card h2 { color: #7cff7c; margin-bottom: 1rem; font-size: 1.2rem; }
-  .upload-area { border: 2px dashed #3a5a3a; border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.3s; }
-  .upload-area:hover { border-color: #7cff7c; }
-  .upload-area input { display: none; }
-  .upload-label { color: #aaa; font-size: 0.9rem; }
-  .preview { max-width: 100%; max-height: 300px; margin-top: 1rem; border-radius: 8px; display: none; }
-  .btn { background: #7cff7c; color: #0a0f0a; border: none; padding: 0.75rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.3s; margin-top: 1rem; }
-  .btn:hover { opacity: 0.9; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .result { margin-top: 1rem; padding: 1rem; background: #1a221a; border-radius: 8px; white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; display: none; line-height: 1.6; }
-  .result.show { display: block; }
-  .error { color: #ff6b6b; }
-  .loading { text-align: center; padding: 2rem; display: none; }
-  .spinner { width: 40px; height: 40px; border: 3px solid #2a3a2a; border-top-color: #7cff7c; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .footer { text-align: center; color: #555; font-size: 0.8rem; margin-top: 3rem; }
-  .badge { display: inline-block; background: #1a3a1a; color: #7cff7c; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; margin-bottom: 1rem; }
-  .nav-link { display: inline-block; color: #7cff7c; text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid #2a3a2a; border-radius: 6px; transition: border-color 0.3s; margin-bottom: 1rem; }
-  .nav-link:hover { border-color: #7cff7c; }
+  * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0f0a; color: #e0e0e0; min-height: 100vh; }}
+  .container {{ max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }}
+  header {{ text-align: center; margin-bottom: 2rem; }}
+  h1 {{ color: #7cff7c; font-size: 2rem; margin-bottom: 0.5rem; }}
+  .subtitle {{ color: #888; font-size: 0.9rem; }}
+  .card {{ background: #141a14; border: 1px solid #2a3a2a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }}
+  .card h2 {{ color: #7cff7c; margin-bottom: 1rem; font-size: 1.2rem; }}
+  .upload-area {{ border: 2px dashed #3a5a3a; border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.3s; }}
+  .upload-area:hover {{ border-color: #7cff7c; }}
+  .upload-area input {{ display: none; }}
+  .upload-label {{ color: #aaa; font-size: 0.9rem; }}
+  .preview {{ max-width: 100%; max-height: 300px; margin-top: 1rem; border-radius: 8px; display: none; }}
+  .btn {{ background: #7cff7c; color: #0a0f0a; border: none; padding: 0.75rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.3s; margin-top: 1rem; }}
+  .btn:hover {{ opacity: 0.9; }}
+  .btn:disabled {{ opacity: 0.5; cursor: not-allowed; }}
+  .result {{ margin-top: 1rem; padding: 1rem; background: #1a221a; border-radius: 8px; white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; display: none; line-height: 1.6; }}
+  .result.show {{ display: block; }}
+  .error {{ color: #ff6b6b; }}
+  .loading {{ text-align: center; padding: 2rem; display: none; }}
+  .spinner {{ width: 40px; height: 40px; border: 3px solid #2a3a2a; border-top-color: #7cff7c; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }}
+  @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
+  .footer {{ text-align: center; color: #555; font-size: 0.8rem; margin-top: 3rem; }}
+  .badge {{ display: inline-block; background: #1a3a1a; color: #7cff7c; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; margin-bottom: 1rem; }}
+  .nav-link {{ display: inline-block; color: #7cff7c; text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid #2a3a2a; border-radius: 6px; transition: border-color 0.3s; }}
+  .nav-link:hover {{ border-color: #7cff7c; }}
+  .form-group {{ margin-bottom: 1rem; }}
+  .form-group label {{ display: block; color: #ccc; font-size: 0.85rem; margin-bottom: 0.4rem; font-weight: 600; }}
+  .form-group input, .form-group select {{ width: 100%; padding: 0.7rem; background: #1a221a; border: 1px solid #2a3a2a; border-radius: 6px; color: #e0e0e0; font-size: 0.9rem; outline: none; }}
+  .form-group input:focus, .form-group select:focus {{ border-color: #7cff7c; }}
+  .form-group select option {{ background: #141a14; }}
+  .form-row {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }}
+  @media (max-width: 600px) {{ .form-row {{ grid-template-columns: 1fr; }} }}
 </style>
 </head>
 <body>
@@ -329,22 +339,40 @@ DEMO_PAGE = """<!DOCTYPE html>
     <div class="badge">AI-Powered Crop Disease Detection</div>
     <h1>CropGuard NG</h1>
     <p class="subtitle">Protecting Nigerian Farms, One Alert at a Time</p>
-    <a href="/" class="nav-link">Back to Dashboard</a>
+    <a href="/" class="nav-link">&larr; Back to Dashboard</a>
   </header>
 
   <div class="card">
-    <h2>Upload a crop image for AI analysis</h2>
+    <h2>Report a Crop Disease</h2>
     <p style="color:#888;font-size:0.85rem;margin-bottom:1rem;">
-      Take a photo of a diseased crop leaf and see instant diagnosis.
+      Fill in your details and upload a photo of the affected crop for instant AI diagnosis.
     </p>
-    <form id="uploadForm">
+    <form id="reportForm">
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="e.g. 08031234567" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="state">State</label>
+          <select id="state" name="state" required>
+            <option value="">-- Select State --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="lga">LGA</label>
+          <select id="lga" name="lga" required>
+            <option value="">-- Select LGA --</option>
+          </select>
+        </div>
+      </div>
       <div class="upload-area" id="dropArea">
         <input type="file" id="imageInput" accept="image/*" capture="environment">
-        <div class="upload-label">Tap to take a photo or choose an image</div>
+        <div class="upload-label">Tap to take a photo or choose an image of the diseased crop</div>
         <img id="preview" class="preview" alt="Preview">
       </div>
       <div style="text-align:center">
-        <button type="submit" class="btn" id="analyzeBtn" disabled>Analyze Crop Image</button>
+        <button type="submit" class="btn" id="analyzeBtn">Analyze & Save Report</button>
       </div>
     </form>
   </div>
@@ -355,7 +383,7 @@ DEMO_PAGE = """<!DOCTYPE html>
   </div>
 
   <div class="card" id="resultCard" style="display:none">
-    <h2>Analysis Result</h2>
+    <h2 id="resultTitle">Analysis Result</h2>
     <div class="result" id="result"></div>
   </div>
 
@@ -365,68 +393,110 @@ DEMO_PAGE = """<!DOCTYPE html>
 </div>
 
 <script>
-const dropArea = document.getElementById('dropArea');
-const imageInput = document.getElementById('imageInput');
-const preview = document.getElementById('preview');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const form = document.getElementById('uploadForm');
-const loading = document.getElementById('loading');
-const resultCard = document.getElementById('resultCard');
-const resultDiv = document.getElementById('result');
+var LOCATIONS = {LOCATIONS_JSON};
+var STATE_KEYS = {STATE_KEYS_JSON};
 
-dropArea.addEventListener('click', () => imageInput.click());
+var stateSelect = document.getElementById('state');
+var lgaSelect = document.getElementById('lga');
 
-imageInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+STATE_KEYS.forEach(function(key) {{
+  var opt = document.createElement('option');
+  opt.value = LOCATIONS[key]['state'];
+  opt.textContent = LOCATIONS[key]['state'];
+  stateSelect.appendChild(opt);
+}});
+
+stateSelect.addEventListener('change', function() {{
+  var selectedState = this.value;
+  lgaSelect.innerHTML = '<option value="">-- Select LGA --</option>';
+  if (!selectedState) return;
+  for (var key in LOCATIONS) {{
+    if (LOCATIONS[key]['state'] === selectedState) {{
+      LOCATIONS[key]['lgas'].forEach(function(lga) {{
+        var opt = document.createElement('option');
+        opt.value = lga.charAt(0).toUpperCase() + lga.slice(1);
+        opt.textContent = lga.charAt(0).toUpperCase() + lga.slice(1);
+        lgaSelect.appendChild(opt);
+      }});
+    }}
+  }}
+}});
+
+var dropArea = document.getElementById('dropArea');
+var imageInput = document.getElementById('imageInput');
+var preview = document.getElementById('preview');
+var analyzeBtn = document.getElementById('analyzeBtn');
+var form = document.getElementById('reportForm');
+var loading = document.getElementById('loading');
+var resultCard = document.getElementById('resultCard');
+var resultDiv = document.getElementById('result');
+var resultTitle = document.getElementById('resultTitle');
+
+dropArea.addEventListener('click', function() {{ imageInput.click(); }});
+
+imageInput.addEventListener('change', function(e) {{
+  var file = e.target.files[0];
+  if (file) {{
+    var reader = new FileReader();
+    reader.onload = function(ev) {{
       preview.src = ev.target.result;
       preview.style.display = 'block';
-      analyzeBtn.disabled = false;
-    };
+    }};
     reader.readAsDataURL(file);
-  }
-});
+  }}
+}});
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', async function(e) {{
   e.preventDefault();
-  const file = imageInput.files[0];
-  if (!file) return;
+  var file = imageInput.files[0];
+  var phone = document.getElementById('phone').value.trim();
+  var state = stateSelect.value;
+  var lga = lgaSelect.value;
+  if (!file) {{ alert('Please select a crop image.'); return; }}
+  if (!phone) {{ alert('Please enter your phone number.'); return; }}
+  if (!state || !lga) {{ alert('Please select your State and LGA.'); return; }}
 
   analyzeBtn.disabled = true;
   analyzeBtn.textContent = 'Analyzing...';
   loading.style.display = 'block';
   resultCard.style.display = 'none';
 
-  const formData = new FormData();
+  var formData = new FormData();
   formData.append('image', file);
+  formData.append('phone', phone);
+  formData.append('state', state);
+  formData.append('lga', lga);
 
-  try {
-    const res = await fetch('/api/analyze', { method: 'POST', body: formData });
-    const data = await res.json();
+  try {{
+    var res = await fetch('/api/analyze', {{ method: 'POST', body: formData }});
+    var data = await res.json();
     loading.style.display = 'none';
     analyzeBtn.disabled = false;
-    analyzeBtn.textContent = 'Analyze Crop Image';
+    analyzeBtn.textContent = 'Analyze & Save Report';
 
-    if (data.success) {
+    if (data.success) {{
+      resultTitle.textContent = 'Report Saved - Analysis Result';
       resultDiv.textContent = data.analysis;
       resultDiv.className = 'result show';
       resultCard.style.display = 'block';
-    } else {
+      form.reset();
+      preview.style.display = 'none';
+    }} else {{
+      resultTitle.textContent = 'Error';
       resultDiv.textContent = 'Error: ' + (data.error || 'Analysis failed');
       resultDiv.className = 'result show error';
       resultCard.style.display = 'block';
-    }
-  } catch (err) {
+    }}
+  }} catch(err) {{
     loading.style.display = 'none';
     analyzeBtn.disabled = false;
-    analyzeBtn.textContent = 'Analyze Crop Image';
+    analyzeBtn.textContent = 'Analyze & Save Report';
+    resultTitle.textContent = 'Network Error';
     resultDiv.textContent = 'Network error: ' + err.message;
     resultDiv.className = 'result show error';
     resultCard.style.display = 'block';
-  }
-});
+  }}
+}});
 </script>
 </body>
 </html>"""
@@ -445,6 +515,11 @@ def analyze_image():
     file = request.files["image"]
     if file.filename == "":
         return jsonify({"success": False, "error": "Empty filename"}), 400
+
+    phone = request.form.get("phone", "").strip()
+    state = request.form.get("state", "").strip()
+    lga = request.form.get("lga", "").strip()
+
     try:
         img_data = file.read()
         img_base64 = base64.b64encode(img_data).decode("utf-8")
@@ -485,6 +560,15 @@ Action: [2 simple steps the farmer can do right now, in plain English]"""
         )
 
         analysis = response.choices[0].message.content
+        disease = extract_field(analysis, "Detected")
+        confidence = extract_field(analysis, "Confidence")
+        crop = detect_crop(disease)
+
+        if phone and state and lga:
+            save_report(phone, disease, confidence, crop, state, lga, None)
+            add_subscriber(phone, state, lga)
+            print(f"Web report saved: {phone} | {disease} | {crop} | {lga}, {state}")
+
         return jsonify({"success": True, "analysis": analysis})
 
     except Exception as e:
