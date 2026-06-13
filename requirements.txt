@@ -1,0 +1,6 @@
+flask>=3.0
+twilio>=9.0
+groq>=0.8
+supabase>=2.0
+requests>=2.31
+gunicorn>=22.0
