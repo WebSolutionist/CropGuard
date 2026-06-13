@@ -243,7 +243,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
               </>
             ) : (
               // Stage 2: Success Screen
-              <>
+              <div style={{ position: 'relative' }}>
                 <div style={{
                   width: '90px',
                   height: '90px',
@@ -260,6 +260,15 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
                   <CheckCircle2 size={46} />
                 </div>
 
+                <div style={{
+                  position: 'absolute', top: '1rem', right: '1rem',
+                  background: 'rgba(234,179,8,0.15)', color: '#eab308',
+                  fontSize: '0.65rem', fontWeight: 700, padding: '0.25rem 0.6rem',
+                  borderRadius: '20px', border: '1px solid rgba(234,179,8,0.3)',
+                  letterSpacing: '0.5px'
+                }}>
+                  SIMULATION
+                </div>
                 <h3 style={{ fontSize: '1.65rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>
                   ✅ Alert Sent Successfully
                 </h3>
@@ -326,7 +335,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
                   <span>Return to Console</span>
                   <ArrowRight size={16} />
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>
