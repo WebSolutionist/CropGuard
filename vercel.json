@@ -1,10 +1,4 @@
 {
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 30,
-      "memory": 512
-    }
-  },
   "routes": [
     { "src": "/api/(.*)", "dest": "api/index.py" },
     { "src": "/whatsapp", "dest": "api/index.py" },
