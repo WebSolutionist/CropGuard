@@ -7,6 +7,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
   const [sendingAlertOutbreak, setSendingAlertOutbreak] = useState(null);
   const [animationStage, setAnimationStage] = useState('idle'); // 'idle' | 'broadcasting' | 'success'
   const [consoleLogs, setConsoleLogs] = useState([]);
+  const [alertedIds, setAlertedIds] = useState(new Set());
 
   useEffect(() => {
     setActiveOutbreaks(outbreaks);
@@ -45,6 +46,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
 
       setTimeout(() => {
         setAnimationStage('success');
+        setAlertedIds(prev => new Set(prev).add(outbreak.id));
         
         if (result.success) {
           setSendingAlertOutbreak(prev => ({
@@ -61,6 +63,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
       console.error("Send alert error:", err);
       setTimeout(() => {
         setAnimationStage('success');
+        setAlertedIds(prev => new Set(prev).add(outbreak.id));
       }, 2000);
     }
   };
@@ -124,7 +127,7 @@ export default function AlertsPage({ outbreaks = [], onOutbreakUpdated }) {
             const isHighRisk = outbreak.risk_level === 'High';
             const badgeBg = isHighRisk ? '#fee2e2' : '#fef3c7';
             const badgeColor = isHighRisk ? '#ef4444' : '#d97706';
-            const isAlertSent = (outbreak.farmers_alerted || 0) > 0;
+            const isAlertSent = alertedIds.has(outbreak.id) || (outbreak.farmers_alerted || 0) > 0;
 
             return (
               <div 

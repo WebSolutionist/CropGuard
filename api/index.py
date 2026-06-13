@@ -38,20 +38,42 @@ def load_subscribers():
 
 
 def save_subscribers(data):
-    with open(SUBSCRIBERS_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+    try:
+        with open(SUBSCRIBERS_FILE, "w") as f:
+            json.dump(data, f, indent=2)
+    except OSError as e:
+        print(f"Subscribers file write skipped ({e})")
 
 
 def add_subscriber(phone, state, lga):
-    data = load_subscribers()
     phone_clean = phone.replace("whatsapp:", "")
+    try:
+        if supabase:
+            supabase.table("subscribers").upsert(
+                {"phone": phone_clean, "state": state, "lga": lga},
+                on_conflict="phone"
+            ).execute()
+            print(f"Subscriber saved to DB: {phone_clean} in {lga}, {state}")
+            return
+    except Exception as e:
+        print(f"Subscriber DB save failed, using file: {e}")
+    data = load_subscribers()
     if phone_clean not in data:
         data[phone_clean] = {"state": state, "lga": lga}
         save_subscribers(data)
-        print(f"Subscriber added: {phone_clean} in {lga}, {state}")
 
 
 def get_subscribers_by_state(state):
+    try:
+        if supabase:
+            result = supabase.table("subscribers")\
+                .select("phone")\
+                .eq("state", state)\
+                .execute()
+            if result.data:
+                return [row["phone"] for row in result.data]
+    except Exception as e:
+        print(f"Subscriber DB read failed, using file: {e}")
     data = load_subscribers()
     return [phone for phone, info in data.items() if info["state"].lower() == state.lower()]
 
