@@ -29,3 +29,5 @@ subscribers.json
 
 # Vercel
 .vercel/
+
+.vercel

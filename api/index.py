@@ -263,23 +263,37 @@ def check_outbreak(disease_name, state, lga, sender=None):
         print("Outbreak check error:", e)
 
 
-# ─── DASHBOARD SPA (built React app) ─────────────────
+# ─── DASHBOARD SPA (built React app, served at /) ────
 DASHBOARD_DIST = os.path.join(os.path.dirname(__file__), "..", "dashboard", "dist")
 
 
-@app.route("/dashboard/")
-@app.route("/dashboard/<path:filename>")
-def dashboard_serve(filename="index.html"):
-    return send_from_directory(DASHBOARD_DIST, filename)
+@app.route("/")
+def dashboard_index():
+    return send_from_directory(DASHBOARD_DIST, "index.html")
 
 
-# ─── DEMO WEB PAGE ────────────────────────────────────
+@app.route("/assets/<path:filename>")
+def dashboard_assets(filename):
+    return send_from_directory(DASHBOARD_DIST, os.path.join("assets", filename))
+
+
+@app.route("/favicon.svg")
+def dashboard_favicon():
+    return send_from_directory(DASHBOARD_DIST, "favicon.svg")
+
+
+@app.route("/icons.svg")
+def dashboard_icons():
+    return send_from_directory(DASHBOARD_DIST, "icons.svg")
+
+
+# ─── DEMO: Analyze image page ────────────────────────
 DEMO_PAGE = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CropGuard NG - Demo</title>
+<title>CropGuard NG - Analyze Crop</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0f0a; color: #e0e0e0; min-height: 100vh; }
@@ -305,9 +319,8 @@ DEMO_PAGE = """<!DOCTYPE html>
   @keyframes spin { to { transform: rotate(360deg); } }
   .footer { text-align: center; color: #555; font-size: 0.8rem; margin-top: 3rem; }
   .badge { display: inline-block; background: #1a3a1a; color: #7cff7c; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; margin-bottom: 1rem; }
-  .links { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-  .links a { color: #7cff7c; text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid #2a3a2a; border-radius: 6px; transition: border-color 0.3s; }
-  .links a:hover { border-color: #7cff7c; }
+  .nav-link { display: inline-block; color: #7cff7c; text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid #2a3a2a; border-radius: 6px; transition: border-color 0.3s; margin-bottom: 1rem; }
+  .nav-link:hover { border-color: #7cff7c; }
 </style>
 </head>
 <body>
@@ -316,10 +329,7 @@ DEMO_PAGE = """<!DOCTYPE html>
     <div class="badge">AI-Powered Crop Disease Detection</div>
     <h1>CropGuard NG</h1>
     <p class="subtitle">Protecting Nigerian Farms, One Alert at a Time</p>
-    <div class="links">
-      <a href="/health">API Health</a>
-      <a href="https://micgachwnhoqqnnlesrj.supabase.co" target="_blank">Supabase DB</a>
-    </div>
+    <a href="/" class="nav-link">Back to Dashboard</a>
   </header>
 
   <div class="card">
@@ -422,7 +432,7 @@ form.addEventListener('submit', async (e) => {
 </html>"""
 
 
-@app.route("/", methods=["GET"])
+@app.route("/analyze", methods=["GET"])
 def demo_page():
     return render_template_string(DEMO_PAGE)
 
